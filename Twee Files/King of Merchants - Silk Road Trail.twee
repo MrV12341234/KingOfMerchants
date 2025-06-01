@@ -1,0 +1,1786 @@
+:: StoryTitle
+Silk Road Trail - Complete Edition w.out health/food
+
+
+:: StoryData
+{
+  "ifid": "cf9ce176-a502-43f1-a2c3-c99d32864df6",
+  "format": "Harlowe",
+  "format-version": "3.3.9",
+  "start": "Start",
+  "zoom": 0.3
+}
+
+
+:: $location {"position":"3425,1200","size":"100,100"}
+
+
+
+:: Baghdad {"position":"1700,1525","size":"100,100"}
+(set: $location to "Baghdad")
+(set: $debtDays to $debtDays + 1)
+(set: $loan to (num: (text: $loan * (1 + $interestRate))))
+
+Welcome to <b>Baghdad</b>, the City of Peace! The intellectual capital of the world with its famous House of Wisdom.
+
+What would you like to do?
+* [[Trade Goods->SetPricesBaghdad]]
+* [[Continue to Constantinople->BaghdadCheck]]
+* [[Send Silver to Emperor Xianzong->SendMoney]]
+  <img src="https://github.com/MrV12341234/website/blob/main/images/9SilkRoadBaghdad.jpg?raw=true" alt="Baghdad Image" style="width: 85%">
+
+
+:: BaghdadCheck {"position":"1725,1675","size":"100,100"}
+(if: $inventory's "Camels" > 0)[
+You walk northwest out of Baghdad towards Constantinople (modern day Instanbul, Turkey).
+
+We have a long journey ahead, crossing the:
+Euphrates River, 
+Syrian Desert,
+and then the Taurus Mountains (south Turkey)
+  [[First cross the Euphrates ->EuphratesRiver]]
+]
+(else:)[
+  You the journey is long across the Syrian desert, you need camels for this.
+  [[Back to Baghdad->Baghdad]]
+]<img src="https://github.com/MrV12341234/website/blob/main/images/10SilkRoadEuphrates.jpg?raw=true" alt="Euphrates River Image" style="width: 85%">
+
+
+:: BaghdadMarket {"position":"2300,1525","size":"100,100"}
+<b>Baghdad Market</b>
+(set: $location to "BaghdadMarket")
+<b>Market Prices:</b><div style="column-count:3;">
+• Textiles: $textilesPrice
+• Books: $booksPrice
+• Glassware: (print: $glasswarePrice)
+• Horses: (print: $horsePrice)
+• Jade: (print: $jadePrice)
+• Fruit: (print: $fruitPrice)
+• Camels: (print: $camelPrice)
+• Silk: (print: $silkPrice)
+• Paper: (print: $paperPrice)
+• Porcelain: (print: $porcelainPrice)
+</div>
+<b>Your Inventory:</b><div style="column-count:3;"><span style="color:Green">
+• Silver: (print: $silver)
+• Camels: (print: $inventory's "Camels")
+• Jade: (print: $inventory's "Jade")
+• Fruit: (print: $inventory's "Fruit")
+• Silk: (print: $inventory's "Silk")
+• Paper: (print: $inventory's "Paper")
+• Porcelain: (print: $inventory's "Porcelain")
+• Glassware: (print: $inventory's "Glassware")
+• Horses: (print: $inventory's "Horse")
+• Textiles: (print: $inventory's "Textiles")
+• Books: (print: $inventory's "Books")
+• Health (print: $health)
+</div></span>
+
+<b>Trade Options:</b>
+[[Buy Textiles /->BuyTextilesAll]] [[Sell Textiles->SellTextilesAll]]
+[[Buy Books /->BuyBooksAll]] [[Sell Books->SellBooksAll]]
+[[Buy Glassware /->BuyGlasswareAll]] [[Sell Glassware->SellGlasswareAll]]
+[[Buy Horses /->BuyHorsesAll]] [[Sell Horses->SellHorsesAll]]
+[[Buy Jade /->BuyJadeAll]] [[Sell Jade->SellJadeAll]]
+[[Buy Fruit /->BuyFruitAll]] [[Sell Fruit->SellFruitAll]]
+[[Buy Camels /->BuyCamelsAll]] [[Sell Camels->SellCamelsAll]]
+[[Buy Silk /->BuySilkAll]] [[Sell Silk->SellSilkAll]]
+[[Buy Paper /->BuyPaperAll]] [[Sell Paper->SellPaperAll]]
+[[Buy Porcelain /->BuyPorcelainAll]] [[Sell Porcelain->SellPorcelainAll]]
+
+[[Back->TaxesBaghdad]]
+
+
+:: BuyBooksAll {"position":"2800,2050","size":"100,100"}
+(set: _amount to (str: $booksToBuy))
+|buyhook>[
+Your Silver: (print: $silver)
+Your Books: (print: $inventory's "Books")
+Book Price: $$booksPrice
+
+How many would you like to buy? (whole numbers only)
+(input-box: bind _amount, "X", 1, _amount)
+(link: "Submit")[
+	(set: _amount to (num: _amount))
+	(set: $booksToBuy to _amount)
+
+	(if: _amount is not a number or _amount <= 0)[
+		(replace: ?buyhook)[
+			<span style="color:red">Invalid input. Try again.</span>
+		]
+	]
+	(else-if: _amount * $booksPrice > $silver)[
+		(replace: ?buyhook)[
+			<span style="color:red">You don't have that much silver.</span>
+		]
+	]
+	(else:)[
+		(set: $silver to $silver - (_amount * $booksPrice))
+		(set: $inventory to $inventory + (datamap: "Books", $inventory's "Books" + _amount))
+		(replace: ?buyhook)[
+			<span style="color:green">
+			You bought: _amount books for (print: _amount * $booksPrice) silver.
+			Remaining silver: $silver
+			Current Books: (print: $inventory's "Books")
+			</span>
+		]
+	]
+]
+]
+[[Back->$location]]
+
+
+:: BuyCamelsAll {"position":"2950,1075","size":"100,100"}
+(set: _amount to (str: $camelToBuy))
+|buyhook>[
+Your Silver: (print: $silver)
+Your Camels: (print: $inventory's "Camels")
+Camel Price: $$camelPrice
+
+How many would you like to buy? (whole numbers only)
+(input-box: bind _amount, "X", 1, _amount)
+(link: "Submit")[
+	(set: _amount to (num: _amount))
+	(set: $camelToBuy to _amount)
+
+	(if: _amount is not a number or _amount <= 0)[
+		(replace: ?buyhook)[
+			<span style="color:red">Invalid input. Try again.</span>
+		]
+	]
+	(else-if: _amount * $camelPrice > $silver)[
+		(replace: ?buyhook)[
+			<span style="color:red">You don't have that much silver.</span>
+		]
+	]
+	(else:)[
+		(set: $silver to $silver - (_amount * $camelPrice))
+		(set: $inventory to $inventory + (datamap: "Camels", $inventory's "Camels" + _amount))
+		(replace: ?buyhook)[
+			<span style="color:green">
+			You bought: _amount camel for (print: _amount * $camelPrice) silver.
+			Remaining silver: $silver
+			Current camel: (print: $inventory's "Camels")
+			</span>
+		]
+	]
+]
+]
+[[Back->$location]]
+<img src="https://github.com/MrV12341234/website/blob/main/images/13Camel.jpg?raw=true" alt="Bactrian Camel Image" style="width: 85%">
+
+
+:: BuyFruitAll {"position":"2950,1325","size":"100,100"}
+(set: _amount to (str: $fruitToBuy))
+|buyhook>[
+Your Silver: (print: $silver)
+Your Fruit: (print: $inventory's "Fruit")
+Fruit Price: $$fruitPrice
+
+How many would you like to buy? (whole numbers only)
+(input-box: bind _amount, "X", 1, _amount)
+(link: "Submit")[
+	(set: _amount to (num: _amount))
+	(set: $fruitToBuy to _amount)
+
+	(if: _amount is not a number or _amount <= 0)[
+		(replace: ?buyhook)[
+			<span style="color:red">Invalid input. Try again.</span>
+		]
+	]
+	(else-if: _amount * $fruitPrice > $silver)[
+		(replace: ?buyhook)[
+			<span style="color:red">You don't have that much silver.</span>
+		]
+	]
+	(else:)[
+		(set: $silver to $silver - (_amount * $fruitPrice))
+		(set: $inventory to $inventory + (datamap: "Fruit", $inventory's "Fruit" + _amount))
+		(replace: ?buyhook)[
+			<span style="color:green">
+			You bought: _amount fruit for (print: _amount * $fruitPrice) silver.
+			Remaining silver: $silver
+			Current Fruit: (print: $inventory's "Fruit")
+			</span>
+		]
+	]
+]
+]
+[[Back->$location]]
+
+
+:: BuyGlasswareAll {"position":"2775,1625","size":"100,100"}
+(set: _amount to (str: $glasswareToBuy))
+|buyhook>[
+Your Silver: (print: $silver)
+Your Glassware: (print: $inventory's "Glassware")
+Glassware Price: $$glasswarePrice
+
+How many would you like to buy? (whole numbers only)
+(input-box: bind _amount, "X", 1, _amount)
+(link: "Submit")[
+	(set: _amount to (num: _amount))
+	(set: $glasswareToBuy to _amount)
+
+	(if: _amount is not a number or _amount <= 0)[
+		(replace: ?buyhook)[
+			<span style="color:red">Invalid input. Try again.</span>
+		]
+	]
+	(else-if: _amount * $glasswarePrice > $silver)[
+		(replace: ?buyhook)[
+			<span style="color:red">You don't have that much silver.</span>
+		]
+	]
+	(else:)[
+		(set: $silver to $silver - (_amount * $glasswarePrice))
+		(set: $inventory to $inventory + (datamap: "Glassware", $inventory's "Glassware" + _amount))
+		(replace: ?buyhook)[
+			<span style="color:green">
+			You bought: _amount glassware for (print: _amount * $glasswarePrice) silver.
+			Remaining silver: $silver
+			Current Glassware: (print: $inventory's "Glassware")
+			</span>
+		]
+	]
+]
+]
+[[Back->$location]]
+
+
+:: BuyHorsesAll {"position":"2800,1775","size":"100,100"}
+(set: _amount to (str: $horseToBuy))
+|buyhook>[
+Your Silver: (print: $silver)
+Your horse: (print: $inventory's "Horse")
+Horse Price: $$horsePrice
+
+How many would you like to buy? (whole numbers only)
+(input-box: bind _amount, "X", 1, _amount)
+(link: "Submit")[
+	(set: _amount to (num: _amount))
+	(set: $horseToBuy to _amount)
+
+	(if: _amount is not a number or _amount <= 0)[
+		(replace: ?buyhook)[
+			<span style="color:red">Invalid input. Try again.</span>
+		]
+	]
+	(else-if: _amount * $horsePrice > $silver)[
+		(replace: ?buyhook)[
+			<span style="color:red">You don't have that much silver.</span>
+		]
+	]
+	(else:)[
+		(set: $silver to $silver - (_amount * $horsePrice))
+		(set: $inventory to $inventory + (datamap: "Horse", $inventory's "Horse" + _amount))
+		(replace: ?buyhook)[
+			<span style="color:green">
+			You bought: _amount horse for (print: _amount * $horsePrice) silver.
+			Remaining silver: $silver
+			Current horse: (print: $inventory's "Horse")
+			</span>
+		]
+	]
+]
+]
+[[Back->$location]]
+
+
+:: BuyJadeAll {"position":"2950,1450","size":"100,100"}
+(set: _amount to (str: $jadeToBuy))
+|buyhook>[
+Your Silver: (print: $silver)
+Your Jade: (print: $inventory's "Jade")
+Jade Price: $$jadePrice
+
+How many would you like to buy? (whole numbers only)
+(input-box: bind _amount, "X", 1, _amount)
+(link: "Submit")[
+	(set: _amount to (num: _amount))
+	(set: $jadeToBuy to _amount)
+
+	(if: _amount is not a number or _amount <= 0)[
+		(replace: ?buyhook)[
+			<span style="color:red">Invalid input. Try again.</span>
+		]
+	]
+	(else-if: _amount * $jadePrice > $silver)[
+		(replace: ?buyhook)[
+			<span style="color:red">You don't have that much silver.</span>
+		]
+	]
+	(else:)[
+		(set: $silver to $silver - (_amount * $jadePrice))
+		(set: $inventory to $inventory + (datamap: "Jade", $inventory's "Jade" + _amount))
+		(replace: ?buyhook)[
+			<span style="color:green">
+			You bought: _amount jade for (print: _amount * $jadePrice) silver.
+			Remaining silver: $silver
+			Current Jade: (print: $inventory's "Jade")
+			</span>
+		]
+	]
+]
+]
+[[Back->$location]]
+
+
+:: BuyPaperAll {"position":"2950,950","size":"100,100"}
+(set: _amount to (str: $paperToBuy))
+|buyhook>[
+Your Silver: (print: $silver)
+Your Paper: (print: $inventory's "Paper")
+Paper Price: $$paperPrice
+
+How many would you like to buy? (whole numbers only)
+(input-box: bind _amount, "X", 1, _amount)
+(link: "Submit")[
+	(set: _amount to (num: _amount))
+	(set: $paperToBuy to _amount)
+
+	(if: _amount is not a number or _amount <= 0)[
+		(replace: ?buyhook)[
+			<span style="color:red">Invalid input. Try again.</span>
+		]
+	]
+	(else-if: _amount * $paperPrice > $silver)[
+		(replace: ?buyhook)[
+			<span style="color:red">You don't have that much silver.</span>
+		]
+	]
+	(else:)[
+		(set: $silver to $silver - (_amount * $paperPrice))
+		(set: $inventory to $inventory + (datamap: "Paper", $inventory's "Paper" + _amount))
+		(replace: ?buyhook)[
+			<span style="color:green">
+			You bought: _amount paper for (print: _amount * $paperPrice) silver.
+			Remaining silver: $silver
+			Current Paper: (print: $inventory's "Paper")</span>
+		]
+	]
+]
+]
+[[Back->$location]]
+
+
+:: BuyPorcelainAll {"position":"2900,675","size":"100,100"}
+(set: _amount to (str: $porcelainToBuy))
+|buyhook>[
+Your Silver: (print: $silver)
+Your Porcelain: (print: $inventory's "Porcelain")
+Porcelain Price: $$porcelainPrice
+
+How many would you like to buy? (whole numbers only)
+(input-box: bind _amount, "X", 1, _amount)
+(link: "Submit")[
+	(set: _amount to (num: _amount))
+	(set: $porcelainToBuy to _amount)
+
+	(if: _amount is not a number or _amount <= 0)[
+		(replace: ?buyhook)[
+			<span style="color:red">Invalid input. Try again.</span>
+		]
+	]
+	(else-if: _amount * $porcelainPrice > $silver)[
+		(replace: ?buyhook)[
+			<span style="color:red">You don't have that much silver.</span>
+		]
+	]
+	(else:)[
+		(set: $silver to $silver - (_amount * $porcelainPrice))
+		(set: $inventory to $inventory + (datamap: "Porcelain", $inventory's "Porcelain" + _amount))
+		(replace: ?buyhook)[
+			<span style="color:green">
+			You bought: _amount porcelain for (print: _amount * $porcelainPrice) silver.
+			Remaining silver: $silver
+			Current porcelain: (print: $inventory's "Porcelain")</span>
+		]
+	]
+]
+]
+[[Back->$location]]
+
+
+:: BuySilkAll {"position":"2900,800","size":"100,100"}
+(set: _amount to (str: $silkToBuy))
+|buyhook>[
+Your Silver: (print: $silver)
+Your Silk: (print: $inventory's "Silk")
+Silk Price: $$silkPrice
+
+How many would you like to buy? (whole numbers only)
+(input-box: bind _amount, "X", 1, _amount)
+(link: "Submit")[
+	(set: _amount to (num: _amount))
+	(set: $silkToBuy to _amount)
+
+	(if: _amount is not a number or _amount <= 0)[
+		(replace: ?buyhook)[
+			<span style="color:red">Invalid input. Try again.</span>
+		]
+	]
+	(else-if: _amount * $silkPrice > $silver)[
+		(replace: ?buyhook)[
+			<span style="color:red">You don't have that much silver.</span>
+		]
+	]
+	(else:)[
+		(set: $silver to $silver - (_amount * $silkPrice))
+		(set: $inventory to $inventory + (datamap: "Silk", $inventory's "Silk" + _amount))
+		(replace: ?buyhook)[
+			<span style="color:green">
+			You bought: _amount silk for (print: _amount * $silkPrice) silver.
+			Remaining Silver: $silver
+			Current Silk: (print: $inventory's "Silk")
+			</span>
+		]
+	]
+]
+]
+[[Back->$location]]
+
+
+:: BuyTextilesAll {"position":"2800,1925","size":"100,100"}
+(set: _amount to (str: $textilesToBuy))
+|buyhook>[
+Your Silver: (print: $silver)
+Your Textiles: (print: $inventory's "Textiles")
+Textiles Price: $$textilesPrice
+
+How many would you like to buy? (whole numbers only)
+(input-box: bind _amount, "X", 1, _amount)
+(link: "Submit")[
+	(set: _amount to (num: _amount))
+	(set: $textilesToBuy to _amount)
+
+	(if: _amount is not a number or _amount <= 0)[
+		(replace: ?buyhook)[
+			<span style="color:red">Invalid input. Try again.</span>
+		]
+	]
+	(else-if: _amount * $textilesPrice > $silver)[
+		(replace: ?buyhook)[
+			<span style="color:red">You don't have that much silver.</span>
+		]
+	]
+	(else:)[
+		(set: $silver to $silver - (_amount * $textilesPrice))
+		(set: $inventory to $inventory + (datamap: "Textiles", $inventory's "Textiles" + _amount))
+		(replace: ?buyhook)[
+			<span style="color:green">
+			You bought: _amount textiles for (print: _amount * $textilesPrice) silver.
+			Remaining silver: $silver
+			Current textiles: (print: $inventory's "Textiles")
+			</span>
+		]
+	]
+]
+]
+[[Back->$location]]
+
+
+:: ChanganMarket {"position":"1675,300","size":"100,100"}
+You've arrived at the bustling markets of <b>Chang'an</b>. Spend your silver wisely before setting out on your journey.
+
+<b>You currently have:</b><div style="column-count:3;"><span style="color:Green">
+• Silver: (print: $silver)
+• Camels: (print: $inventory's "Camels")
+• Silk: (print: $inventory's "Silk")
+• Paper: (print: $inventory's "Paper")
+• Porcelain: (print: $inventory's "Porcelain")
+• Jade: (print: $inventory's "Jade")
+• Fruit: (print: $inventory's "Fruit")
+• Glassware: (print: $inventory's "Glassware")
+• Horses: (print: $inventory's "Horse")
+• Textiles: (print: $inventory's "Textiles")
+• Books: (print: $inventory's "Books")
+</div></span>
+
+<b>Goods for Sale:</b>
+Camels — 50 silver [[Buy /->BuyCamelsAll]] [[Sell->SellCamelsAll]]
+Silk — 20 silver [[Buy /->BuySilkAll]] [[Sell->SellSilkAll]]
+Paper — 10 silver [[Buy /->BuyPaperAll]] [[Sell->SellPaperAll]]
+Porcelain — 15 silver [[Buy /->BuyPorcelainAll]] [[Sell->SellPorcelainAll]]
+
+[[Continue toward Gobi Desert->GobiCheck]]
+<img src="https://github.com/MrV12341234/website/blob/main/images/2SilkRoadPhotoChangan.jpg?raw=true" alt="Changan Image" style="width: 85%">
+
+(set: $camelPrice to 50)
+(set: $silkPrice to 20)
+(set: $paperPrice to 10)
+(set: $porcelainPrice to 15)
+(set: $location to "ChanganMarket")
+
+
+:: Constantinople {"position":"1625,2125","size":"100,100"}
+(set: $location to "Constantinople")
+(set: $debtDays to $debtDays + 1)
+(set: $loan to (num: (text: $loan * (1 + $interestRate))))
+(set: $loan to (round: $loan))
+<b>CONGRATULATIONS!</b> You've reached <b>Constantinople</b>, the glorious capital of the Byzantine Empire! Your Silk Road journey is complete.
+
+This is your final chance to trade. Trade wisely.
+
+Remember, it's important to pay off your loan before clicking finish.
+
+See the calculation for your score at the bottom of this page.
+
+[[Trade Goods->SetPricesConstantinople]]
+[[Send Silver to Emperor Xianzong->SendMoney]]
+
+<span style="color:Green">[[Finish-Calculate Score->Finish]]</span>
+<img src="https://github.com/MrV12341234/website/blob/main/images/12SilkRoadConstantinople.jpg?raw=true" alt="Syrian Desert Image" style="width: 85%">
+
+You will receive these points for each remaining item:
+Silver = 1 point
+Each Loan $ = -2 points
+
+Camels = 80 points
+Food = 2 points
+Silk = 20 points
+Paper = 8 points
+Porcelain = 12 
+Jade = 65 
+Fruit = 5 
+Glassware = 18 
+Horse = 90 
+Textiles = 10 
+Books = 22
+
+You will get no score if your loan is higher than your silver.
+
+
+:: ConstantinopleMarket {"position":"2350,2100","size":"100,100"}
+<b>Constantinople Market</b>
+(set: $location to "ConstantinopleMarket")
+<b>Market Prices:</b><div style="column-count:3;">
+• Textiles: (print: $textilesPrice)
+• Books: (print: $booksPrice)
+• Glassware: (print: $glasswarePrice)
+• Horses: (print: $horsePrice)
+• Jade: (print: $jadePrice)
+• Fruit: (print: $fruitPrice)
+• Camels: (print: $camelPrice)
+• Silk: (print: $silkPrice)
+• Paper: (print: $paperPrice)
+• Porcelain: (print: $porcelainPrice)
+</div>
+<b>Your Inventory:</b><span style="color:Green"><div style="column-count:3;">
+• Silver: (print: $silver)
+• Camels: (print: $inventory's "Camels")
+• Jade: (print: $inventory's "Jade")
+• Fruit: (print: $inventory's "Fruit")
+• Silk: (print: $inventory's "Silk")
+• Paper: (print: $inventory's "Paper")
+• Porcelain: (print: $inventory's "Porcelain")
+• Glassware: (print: $inventory's "Glassware")
+• Horses: (print: $inventory's "Horse")
+• Textiles: (print: $inventory's "Textiles")
+• Books: (print: $inventory's "Books")
+• Health (print: $health)
+</div></span>
+
+<b>Trade Options:</b>
+[[Buy Textiles /->BuyTextilesAll]] [[Sell Textiles->SellTextilesAll]]
+[[Buy Books /->BuyBooksAll]] [[Sell Books->SellBooksAll]]
+[[Buy Glassware /->BuyGlasswareAll]] [[Sell Glassware->SellGlasswareAll]]
+[[Buy Horses /->BuyHorsesAll]] [[Sell Horses->SellHorsesAll]]
+[[Buy Jade /->BuyJadeAll]] [[Sell Jade->SellJadeAll]]
+[[Buy Fruit /->BuyFruitAll]] [[Sell Fruit->SellFruitAll]]
+[[Buy Camels /->BuyCamelsAll]] [[Sell Camels->SellCamelsAll]]
+[[Buy Silk /->BuySilkAll]] [[Sell Silk->SellSilkAll]]
+[[Buy Paper /->BuyPaperAll]] [[Sell Paper->SellPaperAll]]
+[[Buy Porcelain /->BuyPorcelainAll]] [[Sell Porcelain->SellPorcelainAll]]
+
+[[Back->TaxesConstantinople]]
+
+
+:: EuphratesRiver {"position":"1675,1800","size":"100,100"}
+You get to the Euphrates River and...
+(set: $result to (either: "drown", "cut", "success"))
+(if: $result is "drown")[
+  You slip and nearly drown! Dropping some of your belongings and lose a camel.(Camel -1)
+(set: $inventory to $inventory + (datamap: "Camels", $inventory's "Camels" - 1))
+]
+(else-if: $result is "cut")[
+  You step on something sharp. Ouch. But you're a grown up and are totally fine.
+  Carry on.]
+(else:)[
+  You cross heroically and feel stronger. You find silver in the bottom of the river (+25 silver)
+(set: $silver to $silver + 25)]
+  [[Enter the Syrian Desert->SyrianDesert]] 
+  (set: $debtDays to $debtDays + 1)
+(set: $loan to (num: (text: $loan * (1 + $interestRate))))
+(set: $loan to (round: $loan))
+
+
+
+:: Finish {"position":"1600,2325","size":"100,100"}
+Game Over
+(set: $score to 
+  ($inventory's "Camels") * 80 +
+  ($inventory's "Silk") * 20 +
+  ($inventory's "Paper") * 8 +
+  ($inventory's "Porcelain") * 12 +
+  ($inventory's "Jade") * 65 +
+  ($inventory's "Fruit") * 5 +
+  ($inventory's "Glassware") * 18 +
+  ($inventory's "Horse") * 90 +
+  ($inventory's "Textiles") * 10 +
+  ($inventory's "Books") * 22 +
+  ($silver * 1) -      
+  ($loan * 2)        
+)
+(if: $silver < $loan)[
+ <span style="color:red">You have more debt than wealth. Your caravan is bankrupt! Emperor Tang Xianzong will send for your murder. Next time pay the Emperor!</span>
+  Remaining Loan: $loan
+  Silver: $silver
+]
+(else:)[
+  Your journey ends in triumph (or mild success?)!  
+  Final Score: <b>$score</b>
+  Remaining Loan: $loan (if: $loan > 0)[Pay off your loan in Constantinople for a higher score)]
+  Silver: $silver
+  
+  0-500: You're a lazy merchant
+  500-1000: You're an average
+  2000+: You're a filthy rich merchant, great job
+  5000+: The king of merchants
+]
+(if: $score > 2000)[
+  1000+ Score: <b>Legendary Success!</b> The Emperor himself wants to meet you, maybe you will run the Tang Dynasty!
+]
+(else-if: $score > 500)[
+  500-1000 Score: <b>Great Success!</b> You've made your fortune.
+]
+(else-if: $score > 0)[
+  0-500 Score: <b>Modest Success</b> - at least you broke even.
+]
+(else:)[
+  <b>Bankrupt!</b> The Emperor finds you...
+]
+[[Play Again->Start]]
+
+
+:: GobiCheck {"position":"1675,425","size":"100,100"}
+(if: $inventory's "Camels" > 0)[
+I hope you're well equipped for your long journey. Onward we go into the 5th largest desert in the world...
+  [[Proceed to Gobi Desert->GobiDesert]]
+]
+(else:)[
+  You proudly march to the edge of the city, chest high with ambition... and immediately stop. No camels. No hope. The Silk Road is long — you need some camels bro, unless you want to carry your porcelain on your back.<br><br>
+  [[Back to Chang'an Market->ChanganMarket]]
+]<img src="https://github.com/MrV12341234/website/blob/main/images/3SilkRoadPhotoGobi.jpg?raw=true" alt="Gobi Desert Image" style="width: 85%">
+
+
+:: GobiDesert {"position":"1675,575","size":"100,100"}
+(set: $debtDays to $debtDays + 1)
+(set: $loan to (num: (text: $loan * (1 + $interestRate))))
+
+The <b>Gobi Desert</b> stretches before you. It's harsh, dry, and endless.
+
+(set: $event to (random: 1, 4))
+(if: $event is 1)[
+  <b>Sandstorm!</b> You lose 1 camel.
+  (set: $inventory to $inventory + (datamap: "Camels", $inventory's "Camels" - 1))
+]
+(else-if: $event is 2)[
+  <b>Bandits!</b> They steal some of your food and 1 Camel. Oh, and punch your big toe... (-1 camel)
+  (set: $inventory to $inventory + (datamap: "Camels", $inventory's "Camels" - 1))
+](else-if: $event is 3)[
+Your brother chases after you saying, "Brother, I know you're missing an eye, so I wanted to give you this silver to help you on your journey"
+(+100 silver)
+(set: $silver to $silver + 100)
+]
+(else:)[
+  <b>Good Fortune!</b> You find an abandoned chest with 3 paper and 4 silk!!
+  (set: $inventory to $inventory + (datamap: "Paper", $inventory's "Paper" + 3))
+  (set: $inventory to $inventory + (datamap: "Silk", $inventory's "Silk" + 3))
+]
+
+[[Continue to Taklamakan Desert->Taklamakan]]
+
+
+:: Kashgar {"position":"1675,825","size":"100,100"}
+(set: $location to "Kashgar")
+(set: $debtDays to $debtDays + 1)
+(set: $loan to (num: (text: $loan * (1 + $interestRate))))
+
+Welcome to <b>Kashgar</b>, the bustling crossroads of Central Asia! The air smells of spices and the markets overflow with exotic goods.
+
+What would you like to do?
+* [[Trade Goods->SetPricesKashgar]]
+* [[Continue to Samarkand->PamirMountains]]
+* [[Send Silver to Emperor Xianzong->SendMoney]]
+<img src="https://github.com/MrV12341234/website/blob/main/images/5SilkRoadKashgar.jpg?raw=true" alt="Kashgar Image" style="width: 85%">
+
+
+:: KashgarMarket {"position":"2350,825","size":"100,100"}
+Kashgar Market
+(set: $location to "KashgarMarket")
+<b>Market Prices:</b><div style="column-count:2; column-gap: 2px; text-align:left;">
+• Jade: $jadePrice
+• Fruit: $fruitPrice
+• Camels: $camelPrice
+• Silk: $silkPrice
+• Paper: $paperPrice
+• Porcelain: $porcelainPrice </div>
+<b>Your Inventory:</b><div style="column-count:2;column-gap: 2px;"><span style="color:Green">
+• Silver: (print: $silver)
+• Camels: (print: $inventory's "Camels")
+• Jade: (print: $inventory's "Jade")
+• Fruit: (print: $inventory's "Fruit")
+• Silk: (print: $inventory's "Silk")
+• Paper: (print: $inventory's "Paper")
+• Porcelain: (print: $inventory's "Porcelain")
+• Glassware: (print: $inventory's "Glassware")
+• Horses: (print: $inventory's "Horse")
+• Textiles: (print: $inventory's "Textiles")
+• Books: (print: $inventory's "Books")
+• Health (print: $health)
+</div></span>
+
+<b>Trade Options:</b>
+[[Buy Jade /->BuyJadeAll]] [[Sell Jade->SellJadeAll]]
+[[Buy Fruit /->BuyFruitAll]] [[Sell Fruit->SellFruitAll]]
+[[Buy Camels /->BuyCamelsAll]] [[Sell Camels->SellCamelsAll]]
+[[Buy Silk /->BuySilkAll]] [[Sell Silk->SellSilkAll]]
+[[Buy Paper /->BuyPaperAll]] [[Sell Paper->SellPaperAll]]
+[[Buy Porcelain /->BuyPorcelainAll]] [[Sell Porcelain->SellPorcelainAll]]
+
+[[Back->TaxesKashgar]]
+
+
+:: Loan100 {"position":"1825,50","size":"100,100"}
+(set: $silver to 100)
+(set: $loan to 100)
+(set: $interestRate to 0.01)
+You take a loan of $loan silver from the emperor.
+1% interest added each day.
+
+[[Continue to Chang'an Market->ChanganMarket]]
+
+
+:: Loan500 {"position":"1975,50","size":"100,100"}
+(set: $silver to 500)
+(set: $loan to 500)
+(set: $interestRate to 0.02)
+You take a loan of $loan silver from the emperor.
+2% interest added each day.
+
+[[Continue to Chang'an Market->ChanganMarket]]
+
+
+:: Loan800 {"position":"2100,50","size":"100,100"}
+(set: $silver to 800)
+(set: $loan to 800)
+(set: $interestRate to 0.03)
+You take a loan of $loan silver from the emperor.
+3% interest added each day.
+
+[[Continue to Chang'an Market->ChanganMarket]]
+
+
+:: NoRunBaghdad {"position":"2000,1575","size":"100,100"}
+(set: $taxEvent to (random: 1, 2))
+(if: $taxEvent is 1)[
+The Emperor's tax collector was having a bad day.
+
+He taxes you 500 silver
+(set: $silver to $silver - 500)
+]
+(else:)[
+The Emperor's tax collector was having a good day.
+
+No extra taxes today.
+]
+[[Continue->Baghdad]] 
+
+
+:: NoRunConstantinople {"position":"1900,2125","size":"100,100"}
+(set: $taxEvent to (random: 1, 2))
+(if: $taxEvent is 1)[
+The Emperor's tax collector was having a bad day.
+
+He taxes you 500 silver
+(set: $silver to $silver - 500)
+]
+(else:)[
+The Emperor's tax collector was having a good day.
+
+No extra taxes today.
+]
+[[Continue->Constantinople]] 
+
+
+:: NoRunKashgar {"position":"1975,675","size":"100,100"}
+(set: $taxEvent to (random: 1, 2))
+(if: $taxEvent is 1)[
+The Emperor's tax collector was having a bad day.
+
+He taxes you 500 silver
+(set: $silver to $silver - 500)
+]
+(else:)[
+The Emperor's tax collector was having a good day.
+
+No extra taxes today.
+]
+[[Continue->Kashgar]] 
+
+
+:: NoRunSamarkand {"position":"1975,1150","size":"100,100"}
+(set: $taxEvent to (random: 1, 2))
+(if: $taxEvent is 1)[
+The Emperor's tax collector was having a bad day.
+
+He taxes you 500 silver
+(set: $silver to $silver - 500)
+]
+(else:)[
+The Emperor's tax collector was having a good day.
+
+No extra taxes today.
+]
+[[Continue->Samarkand]] 
+
+
+:: Old Man {"position":"3650,1200","size":"100,100"}
+Right as you exit Bashdad you see a mysterious old man on the side of the road.
+
+He says, 
+"You're almost to the end of your journey and I've been watching you. You have traveled well, and traded even better. You're about to enter Constantinople, the end of your journey.
+
+When you arrive you will receive these points for each remaining item:
+Silver = 1 
+Each Loan $ = -2 
+
+Camels = 80 
+Food = 2 
+Silk = 20 
+Paper = 8 
+Porcelain = 12 
+Jade = 65 
+Fruit = 5 
+Glassware = 18 
+Horse = 90 
+Textiles = 10 
+Books = 22 
+        
+
+You will get no score if your loan is higher than your silver.
+
+Would you like to go back to Baghdad and finalize your inventory?"
+
+
+
+
+
+:: PamirMountains {"position":"1700,1000","size":"100,100"}
+(set: $location to "PamirMountains")
+(set: $debtDays to $debtDays + 1)
+(set: $loan to (num: (text: $loan * (1 + $interestRate))))
+(if: $inventory's "Camels" <= 0)[
+  You leave Kashgar and get to the foothills of the Pamir Mountains only to realize you don’t have any camels.  
+  
+ How do you expect to carry all your stuff?  
+  [[Back to Kashgar we go->Kashgar]]
+]
+(else:)[
+ Known as the Roof of the World, the <b>Pamir Mountains</b> are sitting between you and the city of Samarkand. You venture in and...
+  (set: $event to (random: 1, 4))
+  (if: $event is 1)[
+    The Torugart Pass was too narrow and a camel fell over.  
+    You lose 1 camel.
+    (set: $inventory to $inventory + (datamap: "Camels", $inventory's "Camels" - 1))
+    [[Continue to the city of Samarkand->Samarkand]]
+  ]
+  (else-if: $event is 2)[
+    <b>Avalanche!</b>  
+    You use some silk to stay warm. Oh, and a rock hit your big toe.  
+    You lose 1 silk (if you have any) and 50 silver to pay the Pamirians to help you get out of the snow and repair your toe. (-1 Silk, -50 Silver)
+    (if: $silver >= 50)[
+    (set: $silver to $silver - 50)
+    ](else:)[
+    (set: $silver to 0)
+    ]
+    (if: $inventory's "Silk" > 0)[
+  (set: $inventory to $inventory + (datamap: "Silk", $inventory's "Silk" - 1))]
+    [[Continue to the city of Samarkand->Samarkand]]
+  ]
+  (else-if: $event is 3)[
+  The Pamirians (people of Pamir Mountains) invite you to their homes. You enjoy great friendship. They give you extra silver to help you on your journey (+30 silver)
+ (set: $silver to $silver + 30)
+ [[Contine to the city of Samarkand->Samarkand]]
+]
+  (else:)[
+    <b>Good Fortune!</b>  
+    You make it through both the Torugart Pass and Irkeshtam Pass, successfully crossing the Pamirs.  
+    Morale is high. 
+    And you find a bunch of porcelain hidden in a cave, do you steal it?
+    [[No, contine to Samarkand->Samarkand]]
+    [[Yes, take the porcelain->StealPorcelain]]
+  ]
+]
+<img src="https://github.com/MrV12341234/website/blob/main/images/6SilkRoadPamir.jpg?raw=true" alt="Pamir Mountains Image" style="width: 85%">
+
+
+:: RestEvent {"position":"3625,1025","size":"100,100"}
+(if: $silver < 30)[
+You need a minimum of 30 silver to visit a relaxation shop.
+]
+(else:)[
+(set: $roll to (random: 1,3))
+(if: $roll is 1)[
+  You visit a massage parlor and doctor: health restored, -30 silver.
+  (set: $health to 100)
+  (set: $silver to $silver - 30)
+]
+(else-if: $roll is 2)[
+  You eat a great meal and your stomach hurts, but youre happy. You take some food with you too (+10 food, health restored, -30 silver)
+  (set: $inventory to $inventory + (datamap: "Food", $inventory's "Food" + 10))
+  (set: $silver to $silver - 30)
+  (set: $health to 100)
+]
+(else:)[
+	(if: $silver >= 30)[
+  You get scammed. Lose 30 silver and your ego.
+  (set: $silver to $silver - 30)
+  ]
+	 (else:)[
+ A robber comes throws you to the ground but realized you have no money, so he only takes a piece of your soul (-2 health)
+ 	(set: $health to $health -2)
+ ]
+ ]
+ ]
+ [[Back->$location]]
+
+
+:: RunBaghdad {"position":"2000,1425","size":"100,100"}
+(set: $taxEvent to (random: 1, 2))
+(if: $taxEvent is 1)[
+The Emperor's tax collector catches you!
+
+He taxes you 500 silver
+(set: $silver to $silver - 500)
+]
+(else:)[
+You get away safe cause you're so fast. 
+]
+[[Continue->Baghdad]] 
+
+
+:: RunConstantinople {"position":"1900,1975","size":"100,100"}
+(set: $taxEvent to (random: 1, 2))
+(if: $taxEvent is 1)[
+The Emperor's tax collector catches you!
+
+He taxes you 500 silver
+(set: $silver to $silver - 500)
+]
+(else:)[
+You get away safe cause you're so fast. 
+]
+[[Continue->Constantinople]] 
+
+
+:: RunKashgar {"position":"1950,525","size":"100,100"}
+(set: $taxEvent to (random: 1, 2))
+(if: $taxEvent is 1)[
+The Emperor's tax collector catches you!
+
+He taxes you 500 silver
+(set: $silver to $silver - 500)
+]
+(else:)[
+You get away safe cause you're so fast. 
+]
+[[Continue->Kashgar]] 
+
+
+:: RunSamarkand {"position":"1925,1000","size":"100,100"}
+(set: $taxEvent to (random: 1, 2))
+(if: $taxEvent is 1)[
+The Emperor's tax collector catches you!
+
+He taxes you 500 silver
+(set: $silver to $silver - 500)
+]
+(else:)[
+You get away safe cause you're so fast. 
+]
+[[Continue->Samarkand]] 
+
+
+:: Samarkand {"position":"1700,1150","size":"100,100"}
+(set: $location to "Samarkand")
+(set: $debtDays to $debtDays + 1)
+(set: $loan to (num: (text: $loan * (1 + $interestRate))))
+
+The golden city of <b>Samarkand</b> dazzles your eyes with its blue-tiled mosques and bustling markets filled with Persian goods.
+
+What would you like to do?
+* [[Trade Goods->SetPricesSamarkand]]
+* [[Continue to Baghdad->SamarkandCheck]]
+* [[Send Silver to Emperor Xianzong->SendMoney]]
+<img src="https://github.com/MrV12341234/website/blob/main/images/7SilkRoadSamarkand.jpg?raw=true" alt="Samarkand Image" style="width: 85%">
+
+
+:: SamarkandCheck {"position":"1675,1275","size":"100,100"}
+(if: $inventory's "Camels" > 0)[
+You leave Samarkand.
+Sitting east of the Caspain Sea, and covering roughly seventy percent of Turkmenistan, you walk into the Karakum desert...
+  [[Contine into the Karakum Desert ->SamarkandToBaghdad]]
+  <img src="https://github.com/MrV12341234/website/blob/main/images/8SilkRoadKarakum.jpg?raw=true" alt="Karakum Desert Image" style="width: 85%">
+]
+(else:)[
+  You the journey is long across the Syrian desert, you need camels for this.
+  [[Back to Samarkand->Samarkand]]
+]
+
+
+:: SamarkandMarket {"position":"2350,1225","size":"100,100"}
+<b>Samarkand Market</b>
+(set: $location to "SamarkandMarket")
+<b>Market Prices:</b><div style="column-count:3;">
+• Glassware: $glasswarePrice
+• Horses: $horsePrice
+• Jade: $jadePrice
+• Fruit: $fruitPrice
+• Camels: $camelPrice
+• Silk: $silkPrice
+• Paper: $paperPrice
+• Porcelain: $porcelainPrice
+</div>
+<b>Your Inventory:</b><div style="column-count:3;"><span style="color:Green">
+• Silver: (print: $silver)
+• Camels: (print: $inventory's "Camels")
+• Jade: (print: $inventory's "Jade")
+• Fruit: (print: $inventory's "Fruit")
+• Silk: (print: $inventory's "Silk")
+• Paper: (print: $inventory's "Paper")
+• Porcelain: (print: $inventory's "Porcelain")
+• Glassware: (print: $inventory's "Glassware")
+• Horses: (print: $inventory's "Horse")
+• Textiles: (print: $inventory's "Textiles")
+• Books: (print: $inventory's "Books")
+• Health (print: $health)
+</div></span>
+
+<b>Trade Options:</b>
+[[Buy Glassware /->BuyGlasswareAll]] [[Sell Glassware->SellGlasswareAll]]
+[[Buy Horses /->BuyHorsesAll]] [[Sell Horses->SellHorsesAll]]
+[[Buy Jade /->BuyJadeAll]] [[Sell Jade->SellJadeAll]]
+[[Buy Fruit /->BuyFruitAll]] [[Sell Fruit->SellFruitAll]]
+[[Buy Camels /->BuyCamelsAll]] [[Sell Camels->SellCamelsAll]]
+[[Buy Silk /->BuySilkAll]] [[Sell Silk->SellSilkAll]]
+[[Buy Paper /->BuyPaperAll]] [[Sell Paper->SellPaperAll]]
+[[Buy Porcelain /->BuyPorcelainAll]] [[Sell Porcelain->SellPorcelainAll]]
+
+[[Back->TaxesSamarkand]]
+(set: $debtDays to $debtDays + 1)
+(set: $loan to (num: (text: $loan * (1 + $interestRate))))
+(set: $location to "SamarkandMarket")
+
+
+:: SamarkandToBaghdad {"position":"1700,1400","size":"100,100"}
+(set: $event to (random: 1, 4))
+(if: $event is 1)[
+Your camels are exhausted and need water, but water is extremely scarce in the Karakum desert. You lose a camel.
+(set: $inventory to $inventory + (datamap: "Camels", $inventory's "Camels" - 1))
+]
+(else-if: $event is 2)[
+You make it through the Karakum desert successfully and, as your caravan approaches Mesopotamia, disaster hits in the Zagros Mountains of western Iran. One of your camels falls off the mountain side!
+(set: _candidates to (a: "Silk", "Paper", "Porcelain", "Camels"))
+(set: _shuffled to (shuffled: ..._candidates))
+(set: _lostText to "")
+(set: _lost1 to _shuffled's 1)
+(set: _lost2 to _shuffled's 2)
+(if: $inventory's _lost1 > 0)[
+  (set: $inventory to $inventory + (datamap: _lost1, $inventory's _lost1 - 1))
+  (set: _lostText to _lostText + "• 1 " + _lost1 + "<br>")
+](if: $inventory's _lost2 > 0)[
+  (set: $inventory to $inventory + (datamap: _lost2, $inventory's _lost2 - 1))
+  (set: _lostText to _lostText + "• 1 " + _lost2 + "<br>")
+](if: _lostText is "")[
+  Fortunately, you were not carrying any valuable goods or camels at the time, so you lost nothing.
+](else:)[
+  You lost:<br>_lostText
+]](else-if: $event is 3)[
+You make it through the Karakum desert and through the Zagros Mountains. 
+
+Before entering Mesopotamia, you must cross the Tigris river. 
+
+As you approach, you notice the water level is very low. You cross successfully and even find extra goods washed up on shore (+2 porcelain, +3 silk, +1 Jade)
+(set: $inventory to $inventory + (datamap: "Porcelain", $inventory's "Porcelain" + 2))
+(set: $inventory to $inventory + (datamap: "Silk", $inventory's "Silk" + 3))
+(set: $inventory to $inventory + (datamap: "Jade", $inventory's "Jade" + 1))
+](else:)[
+You walk through the Karakum desert, rugged hills and mountain passes near Persia (Zagros foothills), and cross the Tigris River into Mesopotamia. Your journey was long but successful. You traded with strangers on the route and now have 2 books and some extra paper!
+(+2 books. +2 paper)
+(set: $inventory to $inventory + (datamap: "Paper", $inventory's "Paper" + 2))
+(set: $inventory to $inventory + (datamap: "Books", $inventory's "Books" + 2))
+]
+[[Enter Baghdad->Baghdad]] 
+(set: $debtDays to $debtDays + 1)
+(set: $loan to (num: (text: $loan * (1 + $interestRate))))
+
+
+:: SellBooksAll {"position":"2975,2075","size":"100,100"}
+(set: _amount to (str: $booksToSell))
+
+(if: $inventory's "Books" > 0)[
+|buyhook>[
+Your Silver: (print: $silver)
+Your Books: (print: $inventory's "Books")
+Books Price: $ $booksPrice
+
+How many would you like to sell? (whole numbers only)
+(input-box: bind _amount, "X", 1, _amount)
+(link: "Submit")[
+	(set: _amount to (num: _amount))
+	(set: $booksToSell to _amount)
+(if: _amount is not a number or _amount <= 0)[
+(replace: ?buyhook)[
+	<span style="color:red">Invalid input. Try again.</span>
+    ]
+](else-if: _amount > $inventory's "Books")[
+(replace: ?buyhook)[
+	<span style="color:red">You don't have that many books.</span>
+    ]
+](else:)[
+	(set: $silver to $silver + (_amount * $booksPrice))
+	 (set: $inventory to $inventory + (datamap: "Books", $inventory's "Books" - _amount))
+     (replace: ?buyhook)[
+	<span style="color:green">
+		You sold: _amount books for (print: _amount * $booksPrice) silver
+		Remaining silver: $silver
+		Current Books: (print: $inventory's "Books") </span>
+	]
+    ]
+    ]
+    ]
+    ]
+(else:)[
+You have no books to sell!
+]
+[[Back->$location]] 
+
+
+:: SellCamelsAll {"position":"3150,1075","size":"100,100"}
+(set: _amount to (str: $camelsToSell))
+(if: $inventory's "Camels" > 0)[
+|buyhook>[
+Your Silver: (print: $silver)
+Your Camels: (print: $inventory's "Camels")
+Camel Price: $$camelPrice
+
+How many would you like to sell? (whole numbers only)
+(input-box: bind _amount, "X", 1, _amount)
+(link: "Submit")[
+	(set: _amount to (num: _amount))
+	(set: $camelsToSell to _amount)
+(if: _amount is not a number or _amount <= 0)[
+(replace: ?buyhook)[
+	<span style="color:red">Invalid input. Try again.</span>
+    ]
+](else-if: _amount > $inventory's "Camels")[
+(replace: ?buyhook)[
+	<span style="color:red">You don't have that many camels.</span> 
+    ]
+](else:)[
+	(set: $silver to $silver + (_amount * $camelPrice))
+	 (set: $inventory to $inventory + (datamap: "Camels", $inventory's "Camels" - _amount))
+     (replace: ?buyhook)[
+	<span style="color:green">
+		You sold: _amount camels for (print: _amount * $camelPrice) silver
+		Remaining Silver: $silver
+		Current Camels: (print: $inventory's "Camels") </span>
+	]
+    ]
+    ]
+    ]
+    ]
+(else:)[
+You broke all your camels backs and have none to sell :(
+]
+[[Back->$location]] 
+<img src="https://github.com/MrV12341234/website/blob/main/images/13Camel.jpg?raw=true" alt="Bactrian Camel Image" style="width: 85%">
+
+
+:: SellFruitAll {"position":"3125,1350","size":"100,100"}
+(set: _amount to (str: $fruitToSell))
+(if: $inventory's "Fruit" > 0)[
+|buyhook>[
+Your Silver: (print: $silver)
+Your Fruit: (print: $inventory's "Fruit")
+Fruit Price: $ $fruitPrice
+
+How many would you like to sell? (whole numbers only)
+(input-box: bind _amount, "X", 1, _amount)
+(link: "Submit")[
+	(set: _amount to (num: _amount))
+	(set: $fruitToSell to _amount)
+(if: _amount is not a number or _amount <= 0)[
+(replace: ?buyhook)[
+	<span style="color:red">Invalid input. Try again.</span>
+    ]
+](else-if: _amount > $inventory's "Fruit")[
+(replace: ?buyhook)[
+	<span style="color:red">You don't have that much fruit.</span>
+    ]
+](else:)[
+	(set: $silver to $silver + (_amount * $fruitPrice))
+	 (set: $inventory to $inventory + (datamap: "Fruit", $inventory's "Fruit" - _amount))
+     (replace: ?buyhook)[
+	<span style="color:green">
+		You sold: _amount fruit for (print: _amount * $fruitPrice) silver
+		Remaining Silver: $silver
+		Current Fruit: (print: $inventory's "Fruit") </span>
+	]
+    ]
+    ]
+    ]
+    ](else:)[
+All your fruit is rotten and you have none to sell :(
+]
+[[Back->$location]] 
+
+
+:: SellGlasswareAll {"position":"2950,1625","size":"100,100"}
+(set: _amount to (str: $glasswareToSell))
+(if: $inventory's "Glassware" > 0)[
+|buyhook>[
+Your Silver: (print: $silver)
+Your Glassware: (print: $inventory's "Glassware")
+Glassware Price: $ $glasswarePrice
+
+How many would you like to sell? (whole numbers only)
+(input-box: bind _amount, "X", 1, _amount)
+(link: "Submit")[
+	(set: _amount to (num: _amount))
+	(set: $glasswareToSell to _amount)
+(if: _amount is not a number or _amount <= 0)[
+(replace: ?buyhook)[
+	<span style="color:red">Invalid input. Try again.</span>
+    ]
+](else-if: _amount > $inventory's "Glassware")[
+(replace: ?buyhook)[
+	<span style="color:red">You don't have that much glassware.</span>
+    ]
+](else:)[
+	(set: $silver to $silver + (_amount * $glasswarePrice))
+	 (set: $inventory to $inventory + (datamap: "Glassware", $inventory's "Glassware" - _amount))
+     (replace: ?buyhook)[
+	<span style="color:green">
+		You sold: _amount glassware for (print: _amount * $glasswarePrice) silver
+		Remaining Silver: $silver
+		Current Glassware: (print: $inventory's "Glassware") </span>
+	]
+    ]
+    ]
+    ]
+    ]
+(else:)[
+You broke all your glassware and have none to sell :(
+]
+[[Back->$location]] 
+
+
+:: SellHorsesAll {"position":"2925,1750","size":"100,100"}
+(set: _amount to (str: $horseToSell))
+(if: $inventory's "Horse" > 0)[
+|buyhook>[
+Your Silver: (print: $silver)
+Your horse: (print: $inventory's "Horse")
+Horse Price: $ $horsePrice
+
+How many would you like to sell? (whole numbers only)
+(input-box: bind _amount, "X", 1, _amount)
+(link: "Submit")[
+	(set: _amount to (num: _amount))
+	(set: $horseToSell to _amount)
+(if: _amount is not a number or _amount <= 0)[
+(replace: ?buyhook)[
+	<span style="color:red">Invalid input. Try again.</span>
+    ]
+](else-if: _amount > $inventory's "Horse")[
+(replace: ?buyhook)[
+	<span style="color:red">You don't have that much horse.</span>
+    ]
+](else:)[
+	(set: $silver to $silver + (_amount * $horsePrice))
+	 (set: $inventory to $inventory + (datamap: "Horse", $inventory's "Horse" - _amount))
+     (replace: ?buyhook)[
+	<span style="color:green">
+		You sold: _amount horse for (print: _amount * $horsePrice) silver
+		Remaining Silver: $silver
+		Current horse: (print: $inventory's "Horse") </span>
+	]
+    ]
+    ]
+    ]
+    ]
+(else:)[
+You have none to sell :(
+]
+[[Back->$location]] 
+
+
+:: SellJadeAll {"position":"3150,1475","size":"100,100"}
+(set: _amount to (str: $jadeToSell))
+(if: $inventory's "Jade" > 0)[
+|buyhook>[
+Your Silver: (print: $silver)
+Your Jade: (print: $inventory's "Jade")
+Jade Price: $ $jadePrice
+
+How many would you like to sell? (whole numbers only)
+(input-box: bind _amount, "X", 1, _amount)
+(link: "Submit")[
+	(set: _amount to (num: _amount))
+	(set: $jadeToSell to _amount)
+(if: _amount is not a number or _amount <= 0)[
+(replace: ?buyhook)[
+	<span style="color:red">Invalid input. Try again.</span>
+    ]
+](else-if: _amount > $inventory's "Jade")[
+(replace: ?buyhook)[
+	<span style="color:red">You don't have that much Jade.</span>
+    ]
+](else:)[
+	(set: $silver to $silver + (_amount * $jadePrice))
+	 (set: $inventory to $inventory + (datamap: "Jade", $inventory's "Jade" - _amount))
+     (replace: ?buyhook)[
+	<span style="color:green">
+		You sold: _amount jade for (print: _amount * $jadePrice) silver
+		Remaining Silver: $silver
+		Current Jade: (print: $inventory's "Jade") </span>
+	]
+    ]
+    ]
+    ]
+    ]
+(else:)[
+You broke all your jade and have none to sell :(
+]
+[[Back->$location]] 
+
+
+:: SellPaperAll {"position":"3150,950","size":"100,100"}
+(set: _amount to (str: $paperToSell))
+(if: $inventory's "Paper" > 0)[
+|buyhook>[
+Your Silver: (print: $silver)
+Your Paper: (print: $inventory's "Paper")
+Paper Price: $$paperPrice
+
+How many would you like to sell? (whole numbers only)
+(input-box: bind _amount, "X", 1, _amount)
+(link: "Submit")[
+	(set: _amount to (num: _amount))
+	(set: $paperToSell to _amount)
+(if: _amount is not a number or _amount <= 0)[
+(replace: ?buyhook)[
+	<span style="color:red">Invalid input. Try again.</span>
+    ]
+](else-if: _amount > $inventory's "Paper")[
+(replace: ?buyhook)[
+	<span style="color:red">You don't have that much paper.</span>
+    ]
+](else:)[
+	(set: $silver to $silver + (_amount * $paperPrice))
+	 (set: $inventory to $inventory + (datamap: "Paper", $inventory's "Paper" - _amount))
+     (replace: ?buyhook)[
+	<span style="color:green">
+		You sold: _amount paper for (print: _amount * $paperPrice) silver
+		Remaining Silver: $silver
+		Current Paper: (print: $inventory's "Paper") </span>
+	]
+    ]
+    ]
+    ]
+    ]
+(else:)[
+You lost all your paper and have none to sell :(
+]
+[[Back->$location]] 
+
+
+:: SellPorcelainAll {"position":"3175,700","size":"100,100"}
+(set: _amount to (str: $porcelainToSell))
+(if: $inventory's "Porcelain" > 0)[
+|buyhook>[
+Your Silver: (print: $silver)
+Your Porcelain: (print: $inventory's "Porcelain")
+Porcelain Price: $ $porcelainPrice
+
+How many would you like to sell? (whole numbers only)
+(input-box: bind _amount, "X", 1, _amount)
+(link: "Submit")[
+	(set: _amount to (num: _amount))
+	(set: $porcelainToSell to _amount)
+(if: _amount is not a number or _amount <= 0)[
+(replace: ?buyhook)[
+	<span style="color:red">Invalid input. Try again.</span>
+    ]
+](else-if: _amount > $inventory's "Porcelain")[
+(replace: ?buyhook)[
+	<span style="color:red">You don't have that much Porcelain.</span>
+    ]
+](else:)[
+	(set: $silver to $silver + (_amount * $porcelainPrice))
+	 (set: $inventory to $inventory + (datamap: "Porcelain", $inventory's "Porcelain" - _amount))
+     (replace: ?buyhook)[
+	<span style="color:green">
+		You sold: _amount Porcelain for (print: _amount * $porcelainPrice) silver
+		Remaining Silver: $silver
+		Current Porcelain: (print: $inventory's "Porcelain") </span>
+	]
+    ]
+    ]
+    ]
+    ]
+    
+(else:)[
+You broke all your porcelain and have none to sell :(
+]
+[[Back->$location]] 
+
+
+:: SellSilkAll {"position":"3150,825","size":"100,100"}
+(set: _amount to (str: $silkToSell))
+(if: $inventory's "Silk" > 0)[
+|buyhook>[
+Your Silver: (print: $silver)
+Your Silk: (print: $inventory's "Silk")
+Silk Price: $ $silkPrice
+
+How many would you like to sell? (whole numbers only)
+(input-box: bind _amount, "X", 1, _amount)
+(link: "Submit")[
+	(set: _amount to (num: _amount))
+	(set: $silkToSell to _amount)
+(if: _amount is not a number or _amount <= 0)[
+(replace: ?buyhook)[
+	<span style="color:red">Invalid input. Try again.</span>
+    ]
+](else-if: _amount > $inventory's "Silk")[
+(replace: ?buyhook)[
+	<span style="color:red">You don't have that much silk.</span>
+    ]
+](else:)[
+	(set: $silver to $silver + (_amount * $silkPrice))
+	 (set: $inventory to $inventory + (datamap: "Silk", $inventory's "Silk" - _amount))
+     (replace: ?buyhook)[
+	<span style="color:green">
+		You sold: _amount silk for (print: _amount * $silkPrice) silver
+		Remaining silver: $silver
+		Current Silk: (print: $inventory's "Silk") </span>
+	]
+    ]
+    ]
+    ]
+    ]
+(else:)[
+You gave all your silk to the dog and have none to sell. :(
+]
+[[Back->$location]] 
+
+
+:: SellTextilesAll {"position":"2950,1925","size":"100,100"}
+(set: _amount to (str: $textilesToSell))
+
+(if: $inventory's "Textiles" > 0)[
+|buyhook>[
+Your Silver: (print: $silver)
+Your Textiles: (print: $inventory's "Textiles")
+Textiles Price: $ $textilesPrice
+
+How many would you like to sell? (whole numbers only)
+(input-box: bind _amount, "X", 1, _amount)
+(link: "Submit")[
+	(set: _amount to (num: _amount))
+	(set: $textilesToSell to _amount)
+(if: _amount is not a number or _amount <= 0)[
+(replace: ?buyhook)[
+	<span style="color:red">Invalid input. Try again.</span>
+    ]
+](else-if: _amount > $inventory's "Textiles")[
+(replace: ?buyhook)[
+	<span style="color:red">You don't have that much textiles.</span>
+    ]
+](else:)[
+	(set: $silver to $silver + (_amount * $textilesPrice))
+	 (set: $inventory to $inventory + (datamap: "Textiles", $inventory's "Textiles" - _amount))
+     (replace: ?buyhook)[
+	<span style="color:green">
+		You sold: _amount textiles for (print: _amount * $textilesPrice) silver
+		Remaining silver: $silver
+		Current Textiles: (print: $inventory's "Textiles") </span>
+	]
+    ]
+    ]
+    ]
+    ]
+(else:)[
+You broke all your textiles and have none to sell :(
+]
+[[Back->$location]] 
+
+
+:: SendMoney {"position":"1200,950","size":"100,100"}
+(set: $loan to (round: $loan))
+You currently have $silver silver and owe $loan to Emperor Tang Xianzong.
+|buyhook>[
+(set: _amount to (str: $silverToSend))
+(input-box: bind _amount, "X", 1, _amount)
+(link: "Submit")[
+	(set: _amount to (num: _amount))
+	(set: $silverToSend to _amount)
+(if: _amount is not a number or _amount <= 0)[
+(replace: ?buyhook)[
+	<span style="color:red">Invalid input. Try again.</span>
+]
+]
+(else-if: _amount > $silver)[
+(replace: ?buyhook)[
+	<span style="color:red">You don't have that much silver.</span>
+]
+]
+(else-if: _amount > $loan)[
+(replace: ?buyhook)[
+	<span style="color:red">That amount exceeds your debt.</span>
+]
+]
+(else:)[
+(replace: ?buyhook)[
+	(set: $silver to $silver - _amount)
+	(set: $loan to $loan - _amount)
+	<span style="color:green">
+		You paid _amount silver.
+		Remaining silver: $silver
+		Remaining debt: $loan
+	</span>
+]
+]
+]
+]
+[[Back->$location]]
+
+
+
+:: SetPricesBaghdad {"position":"2000,1725","size":"100,100"}
+You tie your camels and make your way to the market.
+[[Trade Goods->BaghdadMarket]]
+(set: $textilesPrice to (random: 25, 35))
+(set: $booksPrice to (random: 50, 70))
+(set: $jadePrice to (random: 30, 49))
+(set: $fruitPrice to (random: 8, 15))
+(set: $camelPrice to (random: 30, 60))
+(set: $silkPrice to (random: 55, 74))
+(set: $paperPrice to (random: 20, 55))
+(set: $porcelainPrice to (random: 32, 51))
+(set: $glasswarePrice to (random: 35, 70))
+(set: $horsePrice to (random: 81, 150))
+
+
+
+:: SetPricesConstantinople {"position":"1975,2250","size":"100,100"}
+You tie your camels and make your way to the market.
+[[Trade Goods->ConstantinopleMarket]]
+(set: $textilesPrice to (random: 25, 65))
+(set: $booksPrice to (random: 50, 99))
+(set: $jadePrice to (random: 30, 249))
+(set: $fruitPrice to (random: 10, 30))
+(set: $camelPrice to (random: 30, 60))
+(set: $silkPrice to (random: 65, 100))
+(set: $paperPrice to (random: 40, 89))
+(set: $porcelainPrice to (random: 32, 81))
+(set: $glasswarePrice to (random: 85, 282))
+(set: $horsePrice to (random: 61, 520))
+
+
+:: SetPricesKashgar {"position":"2025,825","size":"100,100"}
+
+You tie your camels and make your way to the market.
+
+[[Trade Goods->KashgarMarket]]
+
+(set: $jadePrice to (random: 25, 40))
+(set: $fruitPrice to (random: 5, 10))
+(set: $camelPrice to (random: 40, 70))
+(set: $silkPrice to 23)
+(set: $paperPrice to (random: 9, 18))
+(set: $porcelainPrice to 16)
+(set: $foodPrice to 5)
+
+
+:: SetPricesSamarkand {"position":"2000,1300","size":"100,100"}
+You tie your camels and make your way to the market.
+[[Enter the market->SamarkandMarket]]
+
+(set: $jadePrice to (random: 30, 49))
+(set: $fruitPrice to (random: 8, 15))
+(set: $camelPrice to (random: 40, 60))
+(set: $silkPrice to (random: 35, 62))
+(set: $paperPrice to (random: 15, 29))
+(set: $porcelainPrice to (random: 32, 51))
+(set: $glasswarePrice to (random: 30, 50))
+(set: $horsePrice to (random: 80, 120))
+
+
+
+
+:: Start {"position":"1650,50","size":"100,100"}
+You are a Chinese merchant leading a caravan along the <b>Silk Road</b> in the year <b>806 CE</b>. 
+
+Your mission: 
+Travel from <b>Chang'an (Xi'an, China)</b> to <b>Constantinople (Europe)</b>, trading goods and surviving the perilous journey.
+
+Acquire as much silver as possible.
+
+When you reach Constantinople you will be ranked based on your silver. Are you the king of merchants?
+
+But currently you're broke so you must borrow funds from Emperor Tang Xianzong to begin your trade journey.
+
+Choose your loan:
+* [[Low Loan (100 silver, 1%/day)->Loan100]]
+* [[Medium Loan (500 silver, 2%/day)->Loan500]]
+* [[High Loan (800 silver, 3%/day)->Loan800]]
+
+<img src="https://github.com/MrV12341234/website/blob/main/images/SilkRoadPhoto.jpg?raw=true" alt="Silk Road Image" style="width: 75%">
+
+(set: $silver to 0)
+(set: $loan to 0)
+(set: $interestRate to 0)
+(set: $debtDays to 0)
+(set: $inventory to (datamap:
+  "Camels", 0,
+  "Silk", 0,
+  "Paper", 0,
+  "Porcelain", 0,
+  "Jade", 0,
+  "Fruit", 0,
+  "Glassware", 0,
+  "Horse", 0,
+  "Textiles", 0,
+  "Books", 0
+))
+(set: $location to "Chang'an")
+(set: $score to 0)
+
+
+:: StealPorcelain {"position":"1525,1075","size":"100,100"}
+You take the porcelain, strap it to a camel, and continue on. (porcelain +3)
+[[Continue to the city of Samarkand->Samarkand]]
+   (set: $inventory to $inventory + (datamap: "Porcelain", $inventory's "Porcelain" + 3))
+
+
+:: SyrianDesert {"position":"1675,1950","size":"100,100"}
+You're across the Euphrates River.
+Now you enter the Syrian Desert and...
+(set: $event to (random: 1, 2))
+(if: $event is 1)[
+Native to the Syrian Desert, a nomadic Bedouin tribe attacks your caravan!!
+They steal some of your silver. (-20 Silver). 
+and a camel (-1 camel)
+
+But they smell good, so thats nice.
+	(if: $inventory's "Camels" >= 1)[
+ (set: $inventory to $inventory + (datamap: "Camels", $inventory's "Camels" - 1))
+ ](else:)[
+ (set: $inventory to $inventory + (datamap: "Camels", 0))
+ ]
+(if: $silver >=20)[
+(set: $silver to $silver -20)
+](else:)[
+(set: $silver to 0)]
+](else:)[
+You find a beautiful oasis. You, your camels, and your big toe all drink the much needed water available. While swimming in a small lagoon you find some jade at the bottom! 
+ (+2 Jade)
+ (set: $inventory to $inventory + (datamap: "Jade", $inventory's "Jade" + 2))
+ ]
+ [[Continue to Constantinolple->Constantinople]] 
+ <img src="https://github.com/MrV12341234/website/blob/main/images/11SilkRoadSyrian.jpg?raw=true" alt="Syrian Desert Image" style="width: 85%">
+ (set: $debtDays to $debtDays + 1)
+(set: $loan to (num: (text: $loan * (1 + $interestRate))))
+(set: $loan to (round: $loan))
+ 
+
+
+:: Taklamakan {"position":"1675,700","size":"100,100"}
+<img src="https://github.com/MrV12341234/website/blob/main/images/4SilkRoadTaklamakan.jpg?raw=true" alt="Taklamakan Desert Image" style="width: 85%">
+In northwest China, the Taklamakan desert, known as the <b>"Sea of Death",</b> lives up to its name. 
+Water is scarce, and mirages deceive.
+(set: $event to (random: 1, 2))
+(if: $event is 1)[
+  You get lost. You're so sad, but whats new? You lose items (see below) and a camel. (-1 Camel)
+(if: $inventory's "Camels" >= 1)[
+(set: $inventory to $inventory + (datamap: "Camels", $inventory's "Camels" - 1))
+](else:)[
+(set: $inventory to $inventory + (datamap: "Camels", 0))
+]
+ (set: _lostText to "")
+(if: $inventory's "Silk" > 0)[
+  (set: $inventory to $inventory + (datamap: "Silk", $inventory's "Silk" - 1))
+  (set: _lostText to _lostText + "• 1 Silk<br>")]
+(if: $inventory's "Paper" > 0)[
+  (set: $inventory to $inventory + (datamap: "Paper", $inventory's "Paper" - 1))
+  (set: _lostText to _lostText + "• 1 Paper<br>")]
+(if: _lostText is "")[
+  Fortunately, you were carrying no Silk or Paper, so you lost nothing]
+(else:)[You lost:<br>_lostText
+]
+]
+(else:)[
+  You find a hidden spring with a stray camel. Gain 1 camel
+  (set: $inventory to $inventory + (datamap: "Camels", $inventory's "Camels" + 1))
+]
+[[Proceed to Kashgar->Kashgar]]
+(set: $debtDays to $debtDays + 1)
+(set: $loan to (num: (text: $loan * (1 + $interestRate))))
+
+
+
+:: TaxesBaghdad {"position":"2150,1450","size":"100,100"}
+The Emperor's tax collector spots you!
+
+Do you run?
+[[Yes->RunBaghdad]]
+[[No->NoRunBaghdad]]
+
+
+
+:: TaxesConstantinople {"position":"2125,2050","size":"100,100"}
+The Emperor's tax collector spots you!
+
+Do you run?
+[[Yes->RunConstantinople]]
+[[No->NoRunConstantinople]]
+
+
+
+:: TaxesKashgar {"position":"2175,600","size":"100,100"}
+The Emperor's tax collector spots you!
+
+Do you run?
+[[Yes->RunKashgar]]
+[[No->NoRunKashgar]]
+
+
+
+:: TaxesSamarkand {"position":"2175,1050","size":"100,100"}
+The Emperor's tax collector spots you!
+
+Do you run?
+[[Yes->RunSamarkand]]
+[[No->NoRunSamarkand]]
+
+
+
+:: StoryStylesheet [stylesheet]
+tw-sidebar {
+  display: none;
+}
