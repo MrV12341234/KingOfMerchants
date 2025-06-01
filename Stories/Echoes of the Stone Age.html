@@ -262,15 +262,7 @@ Bad idea, the lion attacks you! (-10 health) (set: $health to $health - 10)
   (set: $health to $health - 1)
   (if: $health &lt;= 0)[[[GAME OVER-&gt;Death]]]
   [[Rest on the cold ground-&gt;Awakening]]
-]</tw-passagedata><tw-passagedata pid="13" name="Startup" tags="" position="25,25" size="100,100">(set: $health to 5)
-(set: $hunger to 3)
-(set: $inventory to (a:))
-(set: $farming to 0)
-(set: $bigKills to 0)
-(set: $village to false)
-
-
-“You are a hunter-gatherer living in Africa towards the end of the stone ages. You and your clan are wandering around Africa trying to survive and thrive.
+]</tw-passagedata><tw-passagedata pid="13" name="Startup" tags="" position="25,25" size="100,100">You are a hunter-gatherer living in Africa towards the end of the stone ages. You and your clan are wandering around Africa trying to survive and thrive.
 
 In this game you wake up each day and have decisions to make. These decisions contribute to your overall well-being. You have health, hunger, and a bag full of things you can carry.
 
@@ -280,9 +272,17 @@ Kill 3 big animals
 Get 5 farming victories
 You acquire a village
 
-At any time, if your hunger gets to 10, you die. If your health is below 0, you die. Choose wisely.”
+At any time, if your hunger gets to 10, you die. If your health is below 0, you die. Choose wisely.
 
-[[Begin-&gt;Awakening]]</tw-passagedata><tw-passagedata pid="14" name="StoryData" tags="" position="250,325" size="100,100">{
+[[Begin-&gt;Awakening]]
+(set: $health to 5)
+(set: $hunger to 3)
+(set: $inventory to (a:))
+(set: $farming to 0)
+(set: $bigKills to 0)
+(set: $village to false)
+
+</tw-passagedata><tw-passagedata pid="14" name="StoryData" tags="" position="250,325" size="100,100">{
   &quot;ifid&quot;: &quot;RANDOM-IFID-12345&quot;,
   &quot;format&quot;: &quot;Harlowe&quot;,
   &quot;format-version&quot;: &quot;3.3.2&quot;,
@@ -290,7 +290,7 @@ At any time, if your hunger gets to 10, you die. If your health is below 0, you 
   &quot;options&quot;: {
     &quot;undo&quot;: false
   }
-}</tw-passagedata><tw-passagedata pid="15" name="Tools" tags="" position="1050,125" size="100,100">(set: $find to (either: &quot;sharp stone&quot;, &quot;bone&quot;, &quot;nothing&quot;, &quot;cut&quot;, &quot;wander&quot;))
+}</tw-passagedata><tw-passagedata pid="15" name="Tools" tags="" position="975,75" size="100,100">(set: $find to (either: &quot;sharp stone&quot;, &quot;bone&quot;, &quot;nothing&quot;, &quot;cut&quot;, &quot;wander&quot;))
 
 (if: $find is &quot;sharp stone&quot;)[
   You find a flint shard—perfect for cutting.
@@ -321,7 +321,7 @@ At any time, if your hunger gets to 10, you die. If your health is below 0, you 
   You find nothing useful and waste energy (-1 health).
 (set: $health to $health - 1)
   [[Try again-&gt;Tools]] | [[Give up-&gt;Awakening]]
-]</tw-passagedata><tw-passagedata pid="16" name="Victory" tags="" position="675,350" size="100,100">Victory!!!
+]</tw-passagedata><tw-passagedata pid="16" name="Victory" tags="" position="650,325" size="100,100">Victory!!!
 After many trials, you thrive. Your descendants will tell your story around fires for generations. You dont suck.
 [[Play again-&gt;Startup]]</tw-passagedata></tw-storydata>
 <script title="Twine engine code" data-main="harlowe">(function(){"use strict";

@@ -1,0 +1,390 @@
+:: StoryTitle
+Echoes of the Stone Age
+
+
+:: StoryData
+{
+  "ifid": "RANDOM-IFID-12345",
+  "format": "Harlowe",
+  "format-version": "3.3.9",
+  "start": "Startup",
+  "zoom": 1
+}
+
+
+:: Awakening {"position":"175,25","size":"100,100"}
+(if: $health <= 0 or $hunger >= 10)[
+	[[GAME OVER->Death]]
+]
+You awaken at dawn today, the savanna stretching endlessly with lions and cheetahs all around.
+
+**Health**: $health | **Hunger**: $hunger | **Inventory:** (if: $inventory's length > 0)[(for: each _item, ...$inventory)[_item, ]](else:)[Empty]
+
+(If: $health >= 15 and $hunger <= 0)[
+  [[Thrive and Win->Victory]]
+]
+(Else-if: $farming >= 5)[
+  [[Build Your Farm Kingdom->Victory]]
+]
+(Else-if: $bigKills >= 3)[
+  [[The Great Hunter->Victory]]
+]
+(Else-if: $village is true)[
+  [[Village Leader->Victory]]
+]
+
+What do you do first?
+- [[Search for food->Food]]
+- [[Look for shelter->Shelter]]
+- [[Scavenge for tools->Tools]]
+- [[Follow animal tracks->Hunting]]
+- [[Try farming->Farming]]
+
+
+:: Combat {"position":"25,150","size":"100,100"}
+(set: $enemy to (either: "lion", "bear", "leopard"))
+(set: $outcome to (random: 1, 3))
+
+(if: $inventory contains "spear")[
+  (if: $outcome >= 2)[
+    You kill the $enemy! Meat for days. (hunger to 0, +1 kill)
+    (set: $hunger to 0)
+    (set: $bigKills to $bigKills + 1)
+    [[Celebrate->Awakening]]
+  ](else:)[
+    A $enemy bites you before fleeing. (-2 health)
+    (set: $health to $health - 2)
+    (if: $health <= 0)[[[GAME OVER->Death]]]
+    [[Lick your wounds->Awakening]]
+  ]
+](else:)[
+  You fight barehanded...
+  (if: $outcome >= 3)[
+    Miraculously, you scare it off!
+    [[Survive->Awakening]]
+  ](else:)[
+    The $enemy cuts your leg off. (-3 health)
+    (set: $health to $health - 3)
+    (if: $health <= 0)[[[GAME OVER->Death]]]
+    [[Crawl away->Awakening]]
+  ]
+]
+
+
+:: Crossing {"position":"725,25","size":"100,100"}
+(set: $result to (either: "drown", "cut", "success"))
+(if: $result is "drown")[
+  You slip and nearly drown! (-2 health +1 hunger)
+  (set: $health to $health - 2)
+  (set: $hunger to $hunger + 1)
+  (if: $health <= 0)[[[GAME OVER->Death]]]
+  [[Coughing and cold->Awakening]]
+]
+(else-if: $result is "cut")[
+  You step on something sharp. Ouch. (-1 health)
+  (set: $health to $health - 1)
+  (if: $health <= 0)[[[GAME OVER->Death]]]
+  [[Limp back->Awakening]]
+]
+(else:)[
+  You cross heroically and feel stronger. (+1 health)
+  (set: $health to $health + 1)
+  [[Explore other side->Awakening]]
+]
+
+
+:: Death {"position":"450,300","size":"100,100"}
+GAME OVER  
+Your journey ends here. The savanna swallows your bones.  
+[[Try again->Startup]]
+
+
+:: Farming {"position":"200,175","size":"100,100"}
+(set: $farmEvent to (either: "find seeds", "domesticate goat", "collapse", "walk", "weeds"))
+
+(if: $farmEvent is "find seeds")[
+  You find ancient seeds! They look promising. (+1 farming)
+  (set: $farming to $farming + 1)
+  (set: $inventory to $inventory + (a: "seeds"))
+  [[Plant and wait->Awakening]]
+]
+(else-if: $farmEvent is "domesticate goat")[
+  You tame a goat. It licks your hand, gross, but you kind of like it. (+1 farming)
+  (set: $farming to $farming + 1)
+  (set: $inventory to $inventory + (a: "goat"))
+  [[Milk the goat->Awakening]]
+]
+(else-if: $farmEvent is "collapse")[
+  You farm the land too hard and collapse. Beginner (-1 health +1 hunger)
+  (set: $health to $health - 1)
+  (set: $hunger to $hunger + 1)
+  (if: $health <= 0)[[[GAME OVER->Death]]]
+  [[Nap under a tree->Awakening]]
+]
+(else-if: $farmEvent is "walk")[
+  You walk all day looking for seeds but only find lion poop (+1 hunger)
+  (set: $hunger to $hunger + 1)
+  [[Cry and go home->Awakening]]
+]
+(else:)[
+  Weeds take over your field. You cry a little. (+1 hunger -1 health)
+  (set: $hunger to $hunger + 1)
+  (set: $health to $health - 1)
+  [[Pull them anyway->Awakening]]
+]
+
+
+:: Fish {"position":"825,325","size":"100,100"}
+(set: $catch to (random: 1, 2))
+(if: $catch is 1)[
+  You catch a slippery fish! (-2 hunger)
+  (set: $hunger to $hunger - 2)
+  [[Eat it raw like a legend->Awakening]]
+](else:)[
+  You fall in. Now you're cold AND hungry. Loser (-1 health)
+  (set: $health to $health - 1)
+  (if: $health <= 0)[[[GAME OVER->Death]]]
+  [[Grumble back->Awakening]]
+]
+
+
+:: Food {"position":"300,50","size":"100,100"}
+(if: $hunger <= 0)[
+  You're too full to eat now. Try chasing a rabbit or doing sit-ups.
+  [[Return->Awakening]]
+]
+(else:)[
+  (set: $event to (either: "berries", "rabbit", "carcass"))
+
+  (if: $event is "berries")[
+    You find a bush of wild berries. They're bitter but edible. (+1 health)
+    (set: $hunger to $hunger - 1)
+    (set: $health to $health +1)
+    [[Eat your fill->Awakening]]
+    [[Save some for later->Awakening]] (set: $inventory to $inventory + (a: "berries"))
+  ]
+  (else-if: $event is "rabbit")[
+    A rabbit runs past! You throw a rock like a pro...
+    (set: $luck to (random: 1, 3))
+    (if: $luck >= 2)[
+      Success! You catch it (-2 hunger +1 health)
+      (set: $hunger to $hunger - 2)
+      (set: $health to $health +1)
+      [[Cook it now->Awakening]]
+      [[Skin it for later->Awakening]] (set: $inventory to $inventory + (a: "hare pelt"))
+    ]
+    (else:)[
+      You miss. You suck. The noise attracts a lion!
+      [[Fight->Combat]] | [[Run Away (-1 health)->Awakening]] (set: $health to $health - 1)
+      (if: $health <= 0)[[[GAME OVER->Death]]]
+    ]
+  ]
+  (else:)[
+    You spot a wildebeest carcass. A lion watches from a distance.
+    <img src="https://upload.wikimedia.org/wikipedia/commons/7/73/Lion_waiting_in_Namibia.jpg" width="400">
+    (if: $inventory contains "sharp stone")[
+      You scare the lion away with your sharp stones and eat the meat! (-2 hunger +1 health)
+      (set: $hunger to $hunger - 2)
+      (set: $bigKills to $bigKills + 1)
+      (set: $health to $health +1)
+      [[Feast->Awakening]]
+    ]
+    (else:)[
+      [[Risk taking meat->Risk Meat]] | [[Leave it->Awakening]]
+    ]
+  ]
+]
+
+
+:: Hunting {"position":"1150,25","size":"100,100"}
+(if: $inventory contains "sharp stone")[
+  You craft a spear with your sharp stone! (+spear +1 hunger)
+  (set: $inventory to $inventory + (a: "spear"))
+  (set: $hunger to $hunger + 1)
+  [[Hunt Animals->Combat]] | [[Return home cause lazy->Awakening]]
+]
+(else-if: $inventory is "bone knife")[
+  You take your bone knife and go hunting (+1 hunger)
+  (set: $hunger to $hunger + 1)
+  (set: $inventory to $inventory + (a: "bone knife"))
+  [[Find animals->Combat]]
+]
+
+(else:)[
+  You lack tools to hunt large animals. 
+  [[Go look for small food->Food]] | [[Return home->Awakening]]
+]
+
+
+:: NeanderHut {"position":"875,200","size":"100,100"}
+(set: $attack to (random: 1, 2))
+(if: $attack is 1)[
+  You get ambushed by surviving Neanderthals! (-2 health)
+  (set: $health to $health - 2)
+  (if: $health <= 0)[[[GAME OVER->Death]]]
+  [[Escape wounded->Awakening]]
+](else:)[
+  You take over the hut and raise a flag. It's a sock on a stick.
+  (set: $village to true)
+  [[You now have a village->Victory]]
+]
+
+
+:: Risk Meat {"position":"425,25","size":"100,100"}
+(set: $success to (random: 1, 2))
+(if: $success is 1)[
+  You grab the meat quickly and the lion is sleeping! (-3 hunger +1 health) 
+  (set: $hunger to $hunger - 3)
+  (set: $health to $health +1)
+  (set: $bigKills to $bigKills + 1)
+[[Continue->Awakening]]
+](else:)[
+Bad idea, the lion attacks you! (-10 health) (set: $health to $health - 10)
+  (if: $health <= 0)[[[GAME OVER->Death]]]
+]
+
+
+:: Shelter {"position":"550,25","size":"100,100"}
+(set: $event to (either: "cave", "storm", "river", "nothing", "neanderthal"))
+
+(if: $event is "cave")[
+  You find a shallow cave (+1 Health).
+  (if: (random: 1, 3) >= 2)[
+    It's empty! A safe place to rest. (+1 health)
+    (set: $health to $health + 1)
+    [[Rest here->Awakening]]
+  ](else:)[
+   But, a bear walks out from the shadows!
+    [[Fight->Combat]] | [[Run->Awakening]] (set: $health to $health - 1)
+    (if: $health <= 0)[[[GAME OVER->Death]]]
+  ]
+]
+(else-if: $event is "storm")[
+  The sky darkens—a storm is coming!
+  (if: $inventory contains "pelt")[
+    You use the pelt as cover.
+    [[Wait it out->Awakening]]
+  ](else:)[
+    You get soaked and fall ill.
+    (set: $health to $health - 1)
+    (if: $health <= 0)[[[GAME OVER->Death]]]
+    [[Find shelter->Shelter]]
+  ]
+]
+(else-if: $event is "river")[
+  You discover a river. Fresh water! (+1 Health)
+  (set: $health to $health + 1)
+  [[Drink and rest->Awakening]]
+  [[Try to catch fish->Fish]]
+  [[Cross river->Crossing]]
+]
+(else-if: $event is "neanderthal")[
+  You find an abandoned Neanderthal hut. It smells like old humans.
+  [[Live here now->Awakening]]
+  [[Investigate further->NeanderHut]]
+]
+(else:)[
+  You find nothing. The wind laughs at you. -1 health for wasting your time.
+  (set: $health to $health - 1)
+  (if: $health <= 0)[[[GAME OVER->Death]]]
+  [[Rest on the cold ground->Awakening]]
+]
+
+
+:: Startup {"position":"25,25","size":"100,100"}
+“You are a hunter-gatherer living in Africa towards the end of the stone ages. You and your clan are wandering around Africa trying to survive and thrive.
+
+In this game you wake up each day and have decisions to make. These decisions contribute to your overall well-being. You have health, hunger, and a bag full of things you can carry.
+
+You win if:
+Health = 15 and hunger=0
+Kill 3 big animals
+Get 5 farming victories
+You acquire a village
+
+At any time, if your hunger gets to 10, you die. If your health is below 0, you die. Choose wisely.”
+
+[[Begin->Awakening]]
+(set: $health to 5)
+(set: $hunger to 3)
+(set: $inventory to (a:))
+(set: $farming to 0)
+(set: $bigKills to 0)
+(set: $village to false)
+
+
+
+
+:: StoryData {"position":"250,325","size":"100,100"}
+{
+  "ifid": "RANDOM-IFID-12345",
+  "format": "Harlowe",
+  "format-version": "3.3.2",
+  "start": "Startup",
+  "options": {
+    "undo": false
+  }
+}
+
+
+:: StoryInit {"position":"50,375","size":"100,100"}
+<script>
+  // Function to hide undo/redo buttons
+  function hideUndoRedoButtons() {
+    const undo = document.querySelector('tw-sidebar tw-icon-button[title="Undo"]');
+    const redo = document.querySelector('tw-sidebar tw-icon-button[title="Redo"]');
+    
+    if (undo) undo.style.display = 'none';
+    if (redo) redo.style.display = 'none';
+  }
+
+  // Try immediately, then retry every 100ms until found (in case UI loads slowly)
+  const interval = setInterval(() => {
+    const sidebar = document.querySelector('tw-sidebar');
+    if (sidebar) {
+      hideUndoRedoButtons();
+      clearInterval(interval); // Stop checking once buttons are hidden
+    }
+  }, 100);
+</script>
+
+
+:: Tools {"position":"1050,125","size":"100,100"}
+(set: $find to (either: "sharp stone", "bone", "nothing", "cut", "wander"))
+
+(if: $find is "sharp stone")[
+  You find a flint shard—perfect for cutting.
+  (set: $inventory to $inventory + (a: "sharp stone"))
+  [[Keep searching->Tools]] | [[Return home->Awakening]]
+]
+(else-if: $find is "bone")[
+  You find an old bone. A weathered bone could be a tool or weapon.
+  (set: $inventory to $inventory + (a: "bone"))
+  [[Sharpen it->Awakening]] (set: $inventory to $inventory - (a: "bone") + (a: "bone knife"))(set: $hunger to $hunger + 1)
+  [[Leave it->Awakening]]
+]
+(else-if: $find is "cut")[
+  You try to make an axe and slice your hand (-1 health +1 hunger).
+  (set: $health to $health - 1)
+  (set: $hunger to $hunger + 1)
+  (if: $health <= 0)[[[GAME OVER->Death]]]
+  [[Bandage it with leaves->Awakening]]
+]
+(else-if: $find is "wander")[
+  You walk far and find nothing. Even the ants laugh (-1 Health, +1Hunger).
+  (set: $health to $health - 1)
+  (set: $hunger to $hunger + 1)
+  (if: $health <= 0)[[[GAME OVER->Death]]]
+  [[Trudge back->Awakening]]
+]
+(else:)[
+  You find nothing useful and waste energy (-1 health).
+(set: $health to $health - 1)
+  [[Try again->Tools]] | [[Give up->Awakening]]
+]
+
+
+:: Victory {"position":"675,350","size":"100,100"}
+Victory!!!
+After many trials, you thrive. Your descendants will tell your story around fires for generations. You dont suck.
+[[Play again->Startup]]
