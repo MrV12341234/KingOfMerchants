@@ -584,14 +584,14 @@ You tie your camels and make your way to the market.
   (else-if: $event is 3)[
   The Pamirians (people of Pamir Mountains) invite you to their homes. You enjoy great friendship. They give you extra silver to help you on your journey (+30 silver)
  (set: $silver to $silver + 30)
- [[Contine to the city of Samarkand-&gt;Samarkand]]
+ [[Continue to the city of Samarkand-&gt;Samarkand]]
 ]
   (else:)[
     &lt;b&gt;Good Fortune!&lt;/b&gt;  
     You make it through both the Torugart Pass and Irkeshtam Pass, successfully crossing the Pamirs.  
     Morale is high. 
     And you find a bunch of porcelain hidden in a cave, do you steal it?
-    [[No, contine to Samarkand-&gt;Samarkand]]
+    [[No, continue to Samarkand-&gt;Samarkand]]
     [[Yes, take the porcelain-&gt;StealPorcelain]]
   ]
 ]
@@ -1223,6 +1223,7 @@ Your camels are exhausted and need water, but water is extremely scarce in the K
 ]
 (else-if: $event is 2)[
 You make it through the Karakum desert successfully and, as your caravan approaches Mesopotamia, disaster hits in the Zagros Mountains of western Iran. One of your camels falls off the mountain side!
+(set: $inventory to $inventory + (datamap: &quot;Camels&quot;, $inventory&#39;s &quot;Camels&quot; - 1))
 (set: _candidates to (a: &quot;Silk&quot;, &quot;Paper&quot;, &quot;Porcelain&quot;, &quot;Camels&quot;))
 (set: _shuffled to (shuffled: ..._candidates))
 (set: _lostText to &quot;&quot;)
@@ -1338,19 +1339,22 @@ and then the Taurus Mountains (south Turkey)
   Silver: $silver
   
   0-500: You&#39;re a lazy merchant
-  500-1000: You&#39;re an average
+  500-2000: You&#39;re an average merchant
   2000+: You&#39;re a filthy rich merchant, great job
   5000+: The king of merchants
 ]
-(if: $score &gt; 2000)[
-  1000+ Score: &lt;b&gt;Legendary Success!&lt;/b&gt; The Emperor himself wants to meet you, maybe you will run the Tang Dynasty!
+(if: $score &gt;= 5000)[
+  5000+ Score: &lt;b&gt;Legendary Success!&lt;/b&gt; The Emperor himself wants to meet you, maybe you will run the Tang Dynasty! Great job, a true King of Merchants.
 ]
-(else-if: $score &gt; 500)[
-  500-1000 Score: &lt;b&gt;Great Success!&lt;/b&gt; You&#39;ve made your fortune.
+(else-if: $score &gt;= 2000)[
+  2000+ Score: &lt;b&gt;Great Success!&lt;/b&gt; You&#39;ve made your fortune. You&#39;re now rich. Not a king, but pretty dang rich. Great job.
 ]
-(else-if: $score &gt; 0)[
-  0-500 Score: &lt;b&gt;Modest Success&lt;/b&gt; - at least you broke even.
+(else-if: $score &gt;= 500)[
+  500-2000 Score: &lt;b&gt;Modest Success&lt;/b&gt; - at least you broke even and can buy some food for yourself. 
 ]
+(else-if: $score &gt;=0)[
+0-500 Score: Your camels can trade better than you.
+
 (else:)[
   &lt;b&gt;Bankrupt!&lt;/b&gt; The Emperor finds you...
 ]
@@ -1409,7 +1413,7 @@ and then the Taurus Mountains (south Turkey)
 [[Back-&gt;TaxesConstantinople]]</tw-passagedata><tw-passagedata pid="52" name="SamarkandCheck" tags="" position="1675,1275" size="100,100">(if: $inventory&#39;s &quot;Camels&quot; &gt; 0)[
 You leave Samarkand.
 Sitting east of the Caspain Sea, and covering roughly seventy percent of Turkmenistan, you walk into the Karakum desert...
-  [[Contine into the Karakum Desert -&gt;SamarkandToBaghdad]]
+  [[Continue into the Karakum Desert -&gt;SamarkandToBaghdad]]
   &lt;img src=&quot;https://github.com/MrV12341234/website/blob/main/images/8SilkRoadKarakum.jpg?raw=true&quot; alt=&quot;Karakum Desert Image&quot; style=&quot;width: 85%&quot;&gt;
 ]
 (else:)[
