@@ -1,5 +1,5 @@
 :: StoryTitle
-Silk Road Trail - Complete Edition w.out health/food
+King of Merchants - Silk Road
 
 
 :: StoryData
@@ -644,19 +644,22 @@ Game Over
   Silver: $silver
   
   0-500: You're a lazy merchant
-  500-1000: You're an average
+  500-2000: You're an average merchant
   2000+: You're a filthy rich merchant, great job
   5000+: The king of merchants
 ]
-(if: $score > 2000)[
-  1000+ Score: <b>Legendary Success!</b> The Emperor himself wants to meet you, maybe you will run the Tang Dynasty!
+(if: $score >= 5000)[
+  5000+ Score: <b>Legendary Success!</b> The Emperor himself wants to meet you, maybe you will run the Tang Dynasty! Great job, a true King of Merchants.
 ]
-(else-if: $score > 500)[
-  500-1000 Score: <b>Great Success!</b> You've made your fortune.
+(else-if: $score >= 2000)[
+  2000+ Score: <b>Great Success!</b> You've made your fortune. You're now rich. Not a king, but pretty dang rich. Great job.
 ]
-(else-if: $score > 0)[
-  0-500 Score: <b>Modest Success</b> - at least you broke even.
+(else-if: $score >= 500)[
+  500-2000 Score: <b>Modest Success</b> - at least you broke even and can buy some food for yourself. 
 ]
+(else-if: $score >=0)[
+0-500 Score: Your camels can trade better than you.
+
 (else:)[
   <b>Bankrupt!</b> The Emperor finds you...
 ]
@@ -912,14 +915,14 @@ Would you like to go back to Baghdad and finalize your inventory?"
   (else-if: $event is 3)[
   The Pamirians (people of Pamir Mountains) invite you to their homes. You enjoy great friendship. They give you extra silver to help you on your journey (+30 silver)
  (set: $silver to $silver + 30)
- [[Contine to the city of Samarkand->Samarkand]]
+ [[Continue to the city of Samarkand->Samarkand]]
 ]
   (else:)[
     <b>Good Fortune!</b>  
     You make it through both the Torugart Pass and Irkeshtam Pass, successfully crossing the Pamirs.  
     Morale is high. 
     And you find a bunch of porcelain hidden in a cave, do you steal it?
-    [[No, contine to Samarkand->Samarkand]]
+    [[No, continue to Samarkand->Samarkand]]
     [[Yes, take the porcelain->StealPorcelain]]
   ]
 ]
@@ -1031,7 +1034,7 @@ What would you like to do?
 (if: $inventory's "Camels" > 0)[
 You leave Samarkand.
 Sitting east of the Caspain Sea, and covering roughly seventy percent of Turkmenistan, you walk into the Karakum desert...
-  [[Contine into the Karakum Desert ->SamarkandToBaghdad]]
+  [[Continue into the Karakum Desert ->SamarkandToBaghdad]]
   <img src="https://github.com/MrV12341234/website/blob/main/images/8SilkRoadKarakum.jpg?raw=true" alt="Karakum Desert Image" style="width: 85%">
 ]
 (else:)[
@@ -1092,6 +1095,7 @@ Your camels are exhausted and need water, but water is extremely scarce in the K
 ]
 (else-if: $event is 2)[
 You make it through the Karakum desert successfully and, as your caravan approaches Mesopotamia, disaster hits in the Zagros Mountains of western Iran. One of your camels falls off the mountain side!
+(set: $inventory to $inventory + (datamap: "Camels", $inventory's "Camels" - 1))
 (set: _candidates to (a: "Silk", "Paper", "Porcelain", "Camels"))
 (set: _shuffled to (shuffled: ..._candidates))
 (set: _lostText to "")
