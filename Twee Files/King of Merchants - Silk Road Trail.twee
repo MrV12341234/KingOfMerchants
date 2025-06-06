@@ -659,7 +659,7 @@ Game Over
 ]
 (else-if: $score >=0)[
 0-500 Score: Your camels can trade better than you.
-
+]
 (else:)[
   <b>Bankrupt!</b> The Emperor finds you...
 ]
