@@ -98,7 +98,7 @@ What do you do first?
   [[Explore other side-&gt;Awakening]]
 ]</tw-passagedata><tw-passagedata pid="5" name="Death" tags="" position="450,300" size="100,100">GAME OVER  
 Your journey ends here. The savanna swallows your bones.  
-[[Try again-&gt;Startup]]</tw-passagedata><tw-passagedata pid="6" name="Farming" tags="" position="200,175" size="100,100">(set: $farmEvent to (either: &quot;find seeds&quot;, &quot;domesticate goat&quot;, &quot;collapse&quot;, &quot;walk&quot;, &quot;weeds&quot;))
+[[Try again-&gt;Startup]]</tw-passagedata><tw-passagedata pid="6" name="Farming" tags="" position="200,175" size="100,100">(set: $farmEvent to (either: &quot;find seeds&quot;, &quot;domesticate goat&quot;, &quot;grow wheat&quot;, &quot;collapse&quot;, &quot;walk&quot;, &quot;weeds&quot;))
 
 (if: $farmEvent is &quot;find seeds&quot;)[
   You find ancient seeds! They look promising. (+1 farming)
@@ -112,6 +112,14 @@ Your journey ends here. The savanna swallows your bones.
   (set: $inventory to $inventory + (a: &quot;goat&quot;))
   [[Milk the goat-&gt;Awakening]]
 ]
+(else-if: $farmEvent is &quot;grow wheat&quot;)[
+  You&#39;ve discovered how to grow wheat. Its hard work but now you can eat bread every day! (+1 farming, +1 health, -1 hunger)
+  (set: $farming to $farming + 1)
+  (set: $health to $health + 1)
+  (set: $hunger to $hunger - 1)
+  (set: $inventory to $inventory + (a: &quot;wheat&quot;))
+  [[Enjoy your bread-&gt;Awakening]]
+  ]
 (else-if: $farmEvent is &quot;collapse&quot;)[
   You farm the land too hard and collapse. Beginner (-1 health +1 hunger)
   (set: $health to $health - 1)
@@ -219,13 +227,13 @@ Your journey ends here. The savanna swallows your bones.
 ](else:)[
 Bad idea, the lion attacks you! (-10 health) (set: $health to $health - 10)
   (if: $health &lt;= 0)[[[GAME OVER-&gt;Death]]]
-]</tw-passagedata><tw-passagedata pid="12" name="Shelter" tags="" position="550,25" size="100,100">(set: $event to (either: &quot;cave&quot;, &quot;storm&quot;, &quot;river&quot;, &quot;nothing&quot;, &quot;neanderthal&quot;))
+]</tw-passagedata><tw-passagedata pid="12" name="Shelter" tags="" position="575,125" size="100,100">(set: $event to (either: &quot;cave&quot;, &quot;storm&quot;, &quot;river&quot;, &quot;nothing&quot;, &quot;neanderthal&quot;))
 
 (if: $event is &quot;cave&quot;)[
   You find a shallow cave (+1 Health).
   (if: (random: 1, 3) &gt;= 2)[
     It&#39;s empty! A safe place to rest. (+1 health)
-    (set: $health to $health + 1)
+    (set: $health to $health + 2)
     [[Rest here-&gt;Awakening]]
   ](else:)[
    But, a bear walks out from the shadows!
